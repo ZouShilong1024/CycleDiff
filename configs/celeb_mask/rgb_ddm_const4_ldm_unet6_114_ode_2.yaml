@@ -1,0 +1,80 @@
+model:
+  class_name: ddm.ddm_const_ode_2.LatentDiffusion
+  image_size: [256, 256]
+  ckpt_path:
+  ignore_keys: []
+  only_model: False
+  sampling_timesteps: 10
+  loss_type: l2
+  start_dist: normal
+  perceptual_weight: 1
+  scale_factor: 0.165
+  scale_by_std: True
+  default_scale: True
+  scale_by_softsign: False
+  eps: !!float 1e-3
+  sigma_max: 1
+  sigma_min: 0.001
+  ldm: True
+  weighting_loss: True
+  use_disloss: False
+  use_l1: False
+  use_augment: False
+  first_stage:
+    class_name: ddm.encoder_decoder.AutoencoderKL
+    embed_dim: 3
+    lossconfig:
+      disc_start: 20001
+      kl_weight: 0.000001
+      disc_weight: 0.5
+    ddconfig:
+      double_z: True
+      z_channels: 3
+      resolution: [ 256, 256 ]
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult: [ 1,2,4 ]  # num_down = len(ch_mult)-1
+      num_res_blocks: 2
+      attn_resolutions: [ ]
+      dropout: 0.0
+    ckpt_path: "/data1/zoushilong/Celeba_mask/results_ae_kl_256x256_d4_rgb/model-14.pt"
+  unet:
+    class_name: unet.uncond_unet_sd_2.EDMPrecond
+    img_resolution: 64
+    img_channels: 3
+    sigma_data: 1.0  # Expected standard deviation of the training data.
+    model_type: 'DhariwalUNet'
+    model_channels: 128  # Base multiplier for the number of channels.
+    channel_mult: [ 1, 2, 2, 2 ]
+    channel_mult_emb: 4  # Multiplier for the dimensionality of the embedding vector.
+    num_blocks: 3  # Number of residual blocks per resolution.
+    attn_resolutions: [ 16, 8 ]  # List of resolutions with self-attention.
+    dropout: 0.1  # dropout.
+    label_dropout: 0
+    augment_dim: 0
+
+data:
+  class_name: ddm.data.Single_dataset
+  datafolder_name: 'img'
+  split: train
+  image_size: [ 286, 286 ]
+  data_root: "/data1/zoushilong/Celeba_mask"
+  augment_horizontal_flip: True
+  batch_size: 48
+  num_workers: 4
+
+trainer:
+  gradient_accumulate_every: 2
+  lr: !!float 1e-4
+  min_lr: !!float 1e-5
+  train_num_steps: 400000
+  save_and_sample_every: 10000
+  log_freq: 500
+  results_folder: "/data1/zoushilong/Celeba_mask/results_ddm_const_uncond_unet_ldm_rgb"
+  amp: False
+  fp16: False
+  resume_milestone: 0
+  test_before: True
+  ema_update_after_step: 20000
+  ema_update_every: 8
