@@ -1,0 +1,22 @@
+torch==1.13.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
+torchvision==0.14.1+cu117 --extra-index-url https://download.pytorch.org/whl/cu117
+accelerate==0.23.0
+einops
+ema-pytorch==0.3.0
+pytorch-lightning==1.9.3
+scikit-learn
+scipy
+thop
+timm
+tqdm
+tensorboard==2.16.2
+fvcore
+albumentations
+omegaconf
+ninja
+imageio
+matplotlib
+numpy==1.24.4
+transformers==4.34.0
+kornia
+webdataset

@@ -1,0 +1,41 @@
+model:
+  class_name: ddm.encoder_decoder.AutoencoderKL
+  embed_dim: 3
+  lossconfig:
+    disc_start: 20001
+    kl_weight: 0.000001
+    disc_weight: 0.5
+  ddconfig:
+    double_z: True
+    z_channels: 3
+    resolution: [ 256, 256 ]
+    in_channels: 3
+    out_ch: 3
+    ch: 128
+    ch_mult: [ 1,2,4 ]  # num_down = len(ch_mult)-1
+    num_res_blocks: 2
+    attn_resolutions: [ ]
+    dropout: 0.0
+  ckpt_path: "/data1/zoushilong/pretrain_weight/model.ckpt"
+
+data:
+  class_name: ddm.data.Single_dataset
+  datafolder_name: 'male'
+  split: train
+  image_size: [286, 286]
+  data_root: "/data1/zoushilong/celeba_hq"
+  augment_horizontal_flip: True
+  batch_size: 8
+  num_workers: 4
+
+trainer:
+  gradient_accumulate_every: 2
+  lr: !!float 5e-6
+  min_lr: !!float 1e-6
+  train_num_steps: 50000
+  save_and_sample_every: 5000
+  log_freq: 200
+  resume_milestone: 0
+  results_folder: "/data1/zoushilong/celeba_hq/results_ae_kl_256x256_d4_male"
+  amp: False
+  fp16: False
