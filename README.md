@@ -74,6 +74,6 @@ accelerate launch translation_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/t
 ```
 
 ## 🙏 Acknowledgement
-Our Code is based on [ADM](https://github.com/GuHuangAI/ADM-Public) and [CycleGAN](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix)
+Our Code is based on [ADM](https://github.com/GuHuangAI/ADM-Public) and [CycleGAN](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
-## 📜 License
+<!-- ## 📜 License -->
