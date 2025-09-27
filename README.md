@@ -30,7 +30,7 @@ pip install -r requirement.txt
 <!-- - 06-30-2025: Release pre-trained cat-to-dog image translation model. See USAGE.md for usage examples. -->
 
 ## 🚀 Train CycleDiff from scratch
-### 0. prepare dataset and pretrained 
+### 0. prepare dataset and the pretrained weight
 The structure of the dataset should be as follows:
 ```
 datasetA2B
@@ -53,7 +53,7 @@ datasetA2B
 |   |   |-- 1.png
 |   |   |-- ...
 ```
-> Before starting training, please modify the dataset paths in `./configs/{datasetA2B}/*.yaml`.
+> Before starting training, 1. please modify the dataset paths in `./configs/{datasetA2B}/*.yaml`. 2. download the pretrained weight at [link](https://ommer-lab.com/files/latent-diffusion/kl-f4.zip) and modify the `ckpt_path` on line 19 of `./configs/{datasetA2B}/*_ae_kl_256x256_d4.yaml`.
 
 ### 1. train VAE
 ```bash
