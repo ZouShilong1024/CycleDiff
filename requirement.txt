@@ -20,3 +20,4 @@ numpy==1.24.4
 transformers==4.34.0
 kornia
 webdataset
+-e git+https://github.com/toshas/torch-fidelity.git@v0.3.0#egg=torch-fidelity
