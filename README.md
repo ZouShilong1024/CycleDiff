@@ -30,8 +30,8 @@ pip install -r requirement.txt
 <!-- - 06-30-2025: Release pre-trained cat-to-dog image translation model. See USAGE.md for usage examples. -->
 
 ## 🚀 Train CycleDiff from scratch
-### 0. prepare dataset
-The training and testing dataset structure should look like:
+### 0. prepare dataset and pretrained 
+The structure of the dataset should be as follows:
 ```
 datasetA2B
 |-- train
@@ -53,6 +53,8 @@ datasetA2B
 |   |   |-- 1.png
 |   |   |-- ...
 ```
+> Before starting training, please modify the dataset paths in `./configs/{datasetA2B}/*.yaml`.
+
 ### 1. train VAE
 ```bash
 accelerate launch train_vae.py --cfg ./configs/{datasetA2B}/{class_A}_ae_kl_256x256_d4.yaml
@@ -68,7 +70,7 @@ accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_B}_ddm
 accelerate launch train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
 ```
 
-## Test CycleDiff
+## 🔍 Test CycleDiff
 ```bash
 accelerate launch translation_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
 ```
