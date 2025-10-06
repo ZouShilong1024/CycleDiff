@@ -25,7 +25,7 @@ data:
   image_size: [286, 286]
   data_root: "/data1/zoushilong/afhqv2"
   augment_horizontal_flip: True
-  batch_size: 16
+  batch_size: 6
   num_workers: 4
 
 trainer:
