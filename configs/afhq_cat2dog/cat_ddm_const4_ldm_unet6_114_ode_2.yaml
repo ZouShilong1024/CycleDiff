@@ -74,7 +74,7 @@ trainer:
   results_folder: "/data1/zoushilong/afhqv2/results_ddm_const_uncond_unet_ldm_cat"
   amp: False
   fp16: False
-  resume_milestone: 0
+  resume_milestone: 8
   test_before: True
   ema_update_after_step: 20000
   ema_update_every: 8

@@ -174,7 +174,6 @@ data_test:
   image_size: [ 256, 256 ]
   data_root: "/data1/zoushilong/afhqv2"
   augment_horizontal_flip: True
-  batch_size: 16
   num_workers: 4
 
 data_test2:
@@ -184,7 +183,6 @@ data_test2:
   image_size: [ 256, 256 ]
   data_root: "/data1/zoushilong/afhqv2"
   augment_horizontal_flip: True
-  batch_size: 16
   num_workers: 4
 
 sampler:

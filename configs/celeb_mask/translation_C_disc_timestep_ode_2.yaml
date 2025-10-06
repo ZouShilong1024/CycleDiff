@@ -175,7 +175,6 @@ data_test:
   image_size: [ 256, 256 ]
   data_root: "/data1/zoushilong/Celeba_mask"
   augment_horizontal_flip: True
-  batch_size: 16
   num_workers: 4
 
 data_test2:
@@ -185,7 +184,6 @@ data_test2:
   image_size: [ 256, 256 ]
   data_root: "/data1/zoushilong/Celeba_mask"
   augment_horizontal_flip: True
-  batch_size: 16
   num_workers: 4
 
 sampler:
@@ -203,5 +201,5 @@ sampler:
   # source_gt_path: '/data1/zoushilong/Celeba_mask/test/img'
   # target_gt_path: '/data1/zoushilong/Celeba_mask/test/sem'
 
-  ckpt_path: "/data1/zoushilong/Celeba_mask/train_cycle_C_disc_G_blocks_12/model-10.pt"
-  save_folder: "/data1/zoushilong/Celeba_mask/sample_results/sem2rgb_model_10_timestep100"
+  ckpt_path: "/data1/zoushilong/Celeba_mask/train_cycle_C_disc_G_blocks_12/model-15.pt"
+  save_folder: "/data1/zoushilong/Celeba_mask/sample_results/sem2rgb_model_15_timestep100"

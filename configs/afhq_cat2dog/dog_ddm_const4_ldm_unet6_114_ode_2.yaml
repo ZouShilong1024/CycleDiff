@@ -71,7 +71,7 @@ trainer:
   train_num_steps: 400000
   save_and_sample_every: 10000
   log_freq: 500
-  results_folder: "/data1/zoushilong/afhqv2/results_ddm_const_uncond_unet_ldm_dog "
+  results_folder: "/data1/zoushilong/afhqv2/results_ddm_const_uncond_unet_ldm_dog"
   amp: False
   fp16: False
   resume_milestone: 10
