@@ -6,6 +6,7 @@
 </div>
 <br>
 
+## 🧭 Content
 - [🛠 Installation](#-installation)
 - [🚀 Train CycleDiff from scratch](#-train-cyclediff-from-scratch)
   - [0. prepare dataset](#0-prepare-dataset)
