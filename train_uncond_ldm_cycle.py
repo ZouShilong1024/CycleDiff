@@ -89,20 +89,12 @@ def main(args):
             with torch.no_grad():
                 for datatmp in dl:
                     break
-                # if isinstance(trainer.model, nn.parallel.DistributedDataParallel):
-                #     all_images = trainer.model.module.sample(batch_size=data_cfg.batch_size)
-                # elif isinstance(trainer.model, nn.Module):
-                #     all_images = trainer.model.sample(batch_size=data_cfg.batch_size)
                 device = trainer.accelerator.device
                 src_img = datatmp["src_img"].to(trainer.accelerator.device)
 
                 x_s = trainer.get_latent_space(src_img, tag="src_img")
                 C_S = -1 * x_s
 
-                # eps = trainer.model1.eps
-                # t = torch.rand(x_s.shape[0], device=x_s.device) * (1. - eps) + eps
-                # recon_fake_C_T = trainer.net_G_A(C_S, t)
-                # recon_fake_C_T = (trainer.model2.first_stage_model.decode(-1 * recon_fake_C_T / trainer.model2.scale_factor) + 1) * 0.5
                 c_list, noise = trainer.model1.reverse_q_sample_c_list_concat(src_img.to(device))
                 target_input = []
 
@@ -123,7 +115,6 @@ def main(args):
                 pred_model1 = trainer.model1.sample(batch_size=src_img.shape[0], )
                 pred_model2 = trainer.model2.sample(batch_size=src_img.shape[0], )
 
-            # trainer.save_img(recon_fake_C_T, train_cfg.resume_milestone, tag="test-before-recon-C_T")
             trainer.save_img(src_img, train_cfg.resume_milestone, tag="test-before-source")
             trainer.save_img(pred_model1, train_cfg.resume_milestone, tag="test-before-model1")
             trainer.save_img(pred_model2, train_cfg.resume_milestone, tag="test-before-model2")
@@ -192,10 +183,6 @@ class Trainer(object):
         self.cfg = cfg
 
         # dataset and dataloader
-
-        # self.ds = Dataset(folder, mask_folder, self.image_size, augment_horizontal_flip = augment_horizontal_flip, convert_image_to = convert_image_to)
-        # dl = DataLoader(self.ds, batch_size = train_batch_size, shuffle = True, pin_memory = True, num_workers = cpu_count())
-
         dl = self.accelerator.prepare(data_loader)
         self.dl = cycle(dl)
 
@@ -227,12 +214,6 @@ class Trainer(object):
             self.ema_G_B = EMA(net_G_B, ema_model=None, beta=0.999,
                            update_after_step=cfg.trainer.ema_update_after_step,
                            update_every=cfg.trainer.ema_update_every)
-            # self.ema_D_A = EMA(net_D_A, ema_model=None, beta=0.999,
-            #                update_after_step=cfg.trainer.ema_update_after_step,
-            #                update_every=cfg.trainer.ema_update_every)
-            # self.ema_D_B = EMA(net_D_B, ema_model=None, beta=0.999,
-            #                update_after_step=cfg.trainer.ema_update_after_step,
-            #                update_every=cfg.trainer.ema_update_every)
 
         self.criterionGAN = GANLoss("lsgan").to(self.accelerator.device)
         self.tv_loss = TVLoss().to(self.accelerator.device)
@@ -319,8 +300,6 @@ class Trainer(object):
             'ema_d2': self.ema_d2.state_dict(),
             'ema_G_A': self.ema_G_A.state_dict(),
             'ema_G_B': self.ema_G_B.state_dict(),
-            # 'ema_D_A': self.ema_D_A.state_dict(),
-            # 'ema_D_B': self.ema_D_B.state_dict(),
             'scaler': self.accelerator.scaler.state_dict() if exists(self.accelerator.scaler) else None
         }
 
@@ -360,8 +339,6 @@ class Trainer(object):
             self.ema_d2.load_state_dict(data['ema_d2'])
             self.ema_G_A.load_state_dict(data['ema_G_A'])
             self.ema_G_B.load_state_dict(data['ema_G_B'])
-            # self.ema_D_A.load_state_dict(data['ema_D_A'])
-            # self.ema_D_B.load_state_dict(data['ema_D_B'])
 
         if exists(self.accelerator.scaler) and exists(data['scaler']):
             self.accelerator.scaler.load_state_dict(data['scaler'])
@@ -429,7 +406,6 @@ class Trainer(object):
             xs_noisy = self.model1.q_sample(x_start=x_s, noise=noise, t=t, C=C_S)
             pred_C_S, pred_noise_C_S = self.model1.model(xs_noisy, t)
 
-            # input_C_S = pred_C_S.detach()
             with torch.autograd.set_detect_anomaly(True):
                 input_C_S = pred_C_S
                 fake_C_T = self.net_G_A(input_C_S, t)
@@ -438,13 +414,11 @@ class Trainer(object):
             
                 x_t = batch["trg_img"]
                 x_t = self.get_latent_space(x_t, tag="trg_img")
-                # t2 = torch.rand(x_t.shape[0], device=x_t.device) * (1. - eps) + eps
                 C_T = -1 * x_t
                 noise2 = torch.randn_like(x_t)
                 xt_noisy = self.model2.q_sample(x_start=x_t, noise=noise2, t=t, C=C_T)
                 pred_C_T, pred_noise_C_T = self.model2.model(xt_noisy, t)
 
-                # input_C_T = pred_C_T.detach()
                 input_C_T = pred_C_T
                 fake_C_S = self.net_G_B(input_C_T, t)
                 recon_C_T = self.net_G_A(fake_C_S, t)
@@ -458,8 +432,6 @@ class Trainer(object):
                 loss_G_adv_A = self.criterionGAN(self.net_D_A(fake_C_T), True)
                 loss_G_adv_B = self.criterionGAN(self.net_D_B(fake_C_S), True)
 
-                # loss_tv_A = 0.5 * self.tv_loss(fake_C_S)
-                # loss_tv_B = 0.5 * self.tv_loss(fake_C_T)
                 loss_perceptual = (self.perceptual_loss(input_C_S, recon_C_S).mean([1, 2, 3]) + self.perceptual_loss(input_C_T, recon_C_T).mean([1, 2, 3])).mean() * self.cfg.trainer.perceptual_weight
 
                 loss_ddm = loss_ldm
@@ -471,8 +443,6 @@ class Trainer(object):
                    "{}/loss_G_adv_B".format(split): loss_G_adv_B.detach(),
                    "{}/loss_cycle_ABA".format(split): loss_cycle_ABA.detach(),
                    "{}/loss_cycle_BAB".format(split): loss_cycle_BAB.detach(),
-                #    "{}/loss_tv_A".format(split): loss_tv_A.detach(),
-                #    "{}/loss_tv_B".format(split): loss_tv_B.detach(),
                    "{}/loss_ldm".format(split): loss_ldm.detach(),
                    "{}/loss_perceptual".format(split): loss_perceptual.detach()
                    }
@@ -491,20 +461,17 @@ class Trainer(object):
             xs_noisy = self.model1.q_sample(x_start=x_s, noise=noise, t=t, C=C_S)
             pred_C_S, pred_noise_C_S = self.model1.model(xs_noisy, t)
 
-            # input_C_S = pred_C_S.detach()
             input_C_S = pred_C_S
             fake_C_T = self.net_G_A(input_C_S, t)
             fake_C_T = self.fake_C_T_buffer.push_and_pop(fake_C_T)
             
             x_t = batch["trg_img"]
             x_t = self.get_latent_space(x_t, tag="trg_img")
-            # t2 = torch.rand(x_t.shape[0], device=x_t.device) * (1. - eps) + eps
             C_T = -1 * x_t
             noise2 = torch.randn_like(x_t)
             xt_noisy = self.model2.q_sample(x_start=x_t, noise=noise2, t=t, C=C_T)
             pred_C_T, pred_noise_C_T = self.model2.model(xt_noisy, t)
 
-            # input_C_T = pred_C_T.detach()
             input_C_T = pred_C_T
             fake_C_S = self.net_G_B(input_C_T, t)
             fake_C_S = self.fake_C_S_buffer.push_and_pop(fake_C_S)
@@ -579,7 +546,6 @@ class Trainer(object):
                             self.set_requires_grad([self.net_D_A, self.net_D_B], requires_grad=False)
                             self.opt_G.zero_grad()
                             self.opt_D.zero_grad()
-                            #with torch.autograd.set_detect_anomaly(True):
                             self.accelerator.backward(loss, retain_graph=True) # loss_generator + loss_ddm
                             self.opt_G.step()
                             self.opt_d1.zero_grad()
@@ -588,14 +554,11 @@ class Trainer(object):
                             self.opt_d1.step()
                             self.opt_d2.step()
 
-                            # self.opt_D.step()
                             loss_idt = log_dict["train/loss_idt"]
                             loss_G_adv_A = log_dict["train/loss_G_adv_A"]
                             loss_G_adv_B = log_dict["train/loss_G_adv_B"]
                             loss_cycle_ABA = log_dict["train/loss_cycle_ABA"]
                             loss_cycle_BAB = log_dict["train/loss_cycle_BAB"]
-                            # loss_tv_A = log_dict["train/loss_tv_A"]
-                            # loss_tv_B = log_dict["train/loss_tv_B"]
                             loss_ldm = log_dict["train/loss_ldm"]
                             loss_perceptual = log_dict["train/loss_perceptual"]
                             loss_gen_toal = log_dict["train/loss_gen_toal"]
@@ -652,7 +615,6 @@ class Trainer(object):
                 accelerator.clip_grad_norm_(self.net_G_B.parameters(), 1.0)
                 accelerator.clip_grad_norm_(self.net_D_A.parameters(), 1.0)
                 accelerator.clip_grad_norm_(self.net_D_B.parameters(), 1.0)
-                # pbar.set_description(f'loss: {total_loss:.4f}')
                 accelerator.wait_for_everyone()
 
                 self.lr_scheduler_d1.step()
@@ -668,8 +630,6 @@ class Trainer(object):
                     self.writer.add_scalar('Generator/loss_G_adv_B', loss_G_adv_B, self.step)
                     self.writer.add_scalar('Generator/loss_cycle_ABA', loss_cycle_ABA, self.step)
                     self.writer.add_scalar('Generator/loss_cycle_BAB', loss_cycle_BAB, self.step)
-                    # self.writer.add_scalar('Generator/loss_tv_A', loss_tv_A, self.step)
-                    # self.writer.add_scalar('Generator/loss_tv_B', loss_tv_B, self.step)
                     self.writer.add_scalar('Generator/loss_ldm', loss_ldm, self.step)
                     self.writer.add_scalar('Generator/loss_perceptual', loss_perceptual, self.step)
                     self.writer.add_scalar('Generator/loss_gen_toal', loss_gen_toal, self.step)
@@ -688,20 +648,14 @@ class Trainer(object):
                     self.ema_d2.to(device)
                     self.ema_G_A.to(device)
                     self.ema_G_B.to(device)
-                    # self.ema_D_A.to(device)
-                    # self.ema_D_B.to(device)
                     self.ema_d1.update()
                     self.ema_d2.update()
                     self.ema_G_A.update()
                     self.ema_G_B.update()
-                    # self.ema_D_A.update()
-                    # self.ema_D_B.update()
 
                     if self.step != 0 and self.step % self.save_every == 0:
                         milestone = self.step // self.save_every
                         self.save(milestone)
-                    # if self.step != 0 and self.step % self.sample_every == 0:
-                        # milestone = self.step // self.sample_every
                         self.model1.eval()
                         self.model2.eval()
                         self.net_G_A.eval()
@@ -712,8 +666,6 @@ class Trainer(object):
 
                             x_s = self.get_latent_space(src_img, tag="src_img")
                             C_S = -1 * x_s
-                            # recon_fake_C_T = self.net_G_A(C_S)
-                            # recon_fake_C_T = (self.model2.first_stage_model.decode(-1 * recon_fake_C_T / self.model2.scale_factor) + 1) * 0.5
                             c_list, noise = self.model1.reverse_q_sample_c_list_concat(src_img)
                             target_input = []
 
@@ -755,7 +707,6 @@ class Trainer(object):
 
                             self.save_img(src_img, milestone, tag="pred-source-A")
                             self.save_img(trg_img, milestone, tag="pred-source-B")
-                            # self.save_img(recon_fake_C_T, milestone, tag="pred-recon-C_T")
                             self.save_img(pred_model1, milestone, tag="pred-model-A")
                             self.save_img(pred_model2, milestone, tag="pred-model-B")
                             self.save_img(pred_img_trg, milestone, tag=f"pred-translation-A2B")
