@@ -1,4 +1,4 @@
-# 🌟 CycleDiff [![arxiv paper](https://img.shields.io/badge/Project-Page-green)](https://zoushilong1024.github.io/CycleDiff.github.io/)	[![arxiv paper](https://img.shields.io/badge/arXiv-Paper-red)](https://arxiv.org/abs/2508.06625)
+# 🌟 CycleDiff: CycleDiff: Cycle Diffusion Models for Unpaired Image-to-image Translation [[![arxiv paper](https://img.shields.io/badge/Project-Page-green)](https://zoushilong1024.github.io/CycleDiff.github.io/)	[![arxiv paper](https://img.shields.io/badge/arXiv-Paper-red)](https://arxiv.org/abs/2508.06625)]
 
 <br> 
 <div align=center>
@@ -6,16 +6,14 @@
 </div>
 <br>
 
-- [🌟 CycleDiff 	](#-cyclediff-)
-  - [🛠 Installation](#-installation)
-  - [🚀 Train CycleDiff from scratch](#-train-cyclediff-from-scratch)
-    - [0. prepare dataset](#0-prepare-dataset)
-    - [1. train VAE](#1-train-vae)
-    - [2. train ldm](#2-train-ldm)
-    - [3. train cycle translator](#3-train-cycle-translator)
-  - [Test CycleDiff](#test-cyclediff)
-  - [🙏 Acknowledgement](#-acknowledgement)
-  - [📜 License](#-license)
+- [🛠 Installation](#-installation)
+- [🚀 Train CycleDiff from scratch](#-train-cyclediff-from-scratch)
+  - [0. prepare dataset](#0-prepare-dataset)
+  - [1. train VAE](#1-train-vae)
+  - [2. train ldm](#2-train-ldm)
+  - [3. train cycle translator](#3-train-cycle-translator)
+- [🔍 Test CycleDiff](#test-cyclediff)
+- [🙏 Acknowledgement](#-acknowledgement)
 
 
 ## 🛠 Installation
