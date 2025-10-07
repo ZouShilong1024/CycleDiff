@@ -200,5 +200,5 @@ sampler:
   # source_gt_path: '/data1/zoushilong/afhqv2/test/dog'
   # target_gt_path: '/data1/zoushilong/afhqv2/test/cat'
 
-  ckpt_path: "/data1/zoushilong/afhqv2/train_cycle_C_disc_G_blocks_12/model-9.pt"
-  save_folder: "/data1/zoushilong/afhqv2/sample_results/cat2dog_model_9_timestep100"
+  ckpt_path: "/data1/zoushilong/afhqv2/train_cycle_C_disc_G_blocks_12/model-12.pt"
+  save_folder: "/data1/zoushilong/afhqv2/sample_results/cat2dog_model_12_timestep100"
