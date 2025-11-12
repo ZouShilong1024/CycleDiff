@@ -1,4 +1,4 @@
-# 🌟 CycleDiff: CycleDiff: Cycle Diffusion Models for Unpaired Image-to-image Translation [[![arxiv paper](https://img.shields.io/badge/Project-Page-green)](https://zoushilong1024.github.io/CycleDiff.github.io/)	[![arxiv paper](https://img.shields.io/badge/arXiv-Paper-red)](https://arxiv.org/abs/2508.06625)]
+# 🌟 CycleDiff: CycleDiff: Cycle Diffusion Models for Unpaired Image-to-image Translation [[![arxiv paper](https://img.shields.io/badge/Project-Page-green)](https://zoushilong1024.github.io/CycleDiff/)	[![arxiv paper](https://img.shields.io/badge/arXiv-Paper-red)](https://arxiv.org/abs/2508.06625)]
 
 <br> 
 <div align=center>
