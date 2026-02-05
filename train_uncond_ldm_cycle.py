@@ -243,7 +243,7 @@ class Trainer(object):
             self.init_from_ckpt2(cfg.trainer.ckpt_path2)
 
     def init_from_ckpt1(self, path):
-        data = torch.load(path,
+        data = safe_torch_load(path,
                           map_location=lambda storage, loc: storage)
         if self.cfg.trainer.ft_use_ema:
             sd = data['ema']
@@ -261,7 +261,7 @@ class Trainer(object):
             self.model1.scale_factor = data['model']['scale_factor']
 
     def init_from_ckpt2(self, path):
-        data = torch.load(path,
+        data = safe_torch_load(path,
                           map_location=lambda storage, loc: storage)
         if self.cfg.trainer.ft_use_ema:
             sd = data['ema']
@@ -308,7 +308,7 @@ class Trainer(object):
     def load(self, milestone):
         accelerator = self.accelerator
 
-        data = torch.load(str(self.results_folder / f'model-{milestone}.pt'),
+        data = safe_torch_load(str(self.results_folder / f'model-{milestone}.pt'),
                           map_location=lambda storage, loc: storage)
 
         self.model1 = self.accelerator.unwrap_model(self.model1)

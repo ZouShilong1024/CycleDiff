@@ -199,7 +199,7 @@ class Trainer(object):
         accelerator = self.accelerator
         device = accelerator.device
 
-        data = torch.load(str(self.results_folder / f'model-{milestone}.pt'),
+        data = safe_torch_load(str(self.results_folder / f'model-{milestone}.pt'),
                           map_location=lambda storage, loc: storage)
 
         self.model = self.accelerator.unwrap_model(self.model)

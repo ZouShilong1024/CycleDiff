@@ -13,6 +13,30 @@ import torch
 import random
 from torch.autograd import Variable
 
+
+def safe_torch_load(path, map_location=None):
+    """
+    兼容不同版本 PyTorch 的 torch.load 函数。
+    
+    PyTorch 2.6+ 将 weights_only 默认值从 False 改为 True，
+    这会导致加载包含非张量对象（如 PyTorch Lightning checkpoint）的文件失败。
+    此函数自动处理版本兼容性问题。
+    
+    Args:
+        path: checkpoint 文件路径
+        map_location: 设备映射（如 'cpu', 'cuda:0' 等）
+    
+    Returns:
+        加载的 checkpoint 数据
+    """
+    try:
+        # 尝试使用 weights_only=False（PyTorch 1.13+）
+        return torch.load(path, map_location=map_location, weights_only=False)
+    except TypeError:
+        # 旧版本 PyTorch 不支持 weights_only 参数
+        return torch.load(path, map_location=map_location)
+
+
 def create_logger(root_dir, des=''):
     root_output_dir = Path(root_dir)
     # set up logger

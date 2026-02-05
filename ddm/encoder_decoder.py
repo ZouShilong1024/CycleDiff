@@ -5,6 +5,7 @@ import torch.nn as nn
 import numpy as np
 from einops import rearrange
 from .loss import LPIPSWithDiscriminator, VQLPIPSWithDiscriminator
+from .utils import safe_torch_load
 # from ldm.util import instantiate_from_config
 # from ldm.modules.attention import LinearAttention
 import torch.nn.functional as F
@@ -1154,7 +1155,7 @@ class VQModel(nn.Module):
         self.lr_g_factor = lr_g_factor
 
     def init_from_ckpt(self, path, ignore_keys=list(), use_ema=True):
-        sd = torch.load(path, map_location="cpu")
+        sd = safe_torch_load(path, map_location="cpu")
         sd_keys = sd.keys()
         if 'ema' in list(sd.keys()) and use_ema:
             sd = sd['ema']
@@ -1332,7 +1333,7 @@ class AutoencoderKL(nn.Module):
             self.init_from_ckpt(ckpt_path, ignore_keys=ignore_keys)
 
     def init_from_ckpt(self, path, ignore_keys=list(), use_ema=True):
-        sd = torch.load(path, map_location="cpu")
+        sd = safe_torch_load(path, map_location="cpu")
         sd_keys = sd.keys()
         if 'ema' in list(sd.keys()) and use_ema:
             sd = sd['ema']

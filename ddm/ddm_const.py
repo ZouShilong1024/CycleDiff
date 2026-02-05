@@ -3,7 +3,7 @@ import torch.nn as nn
 import math
 import torch.nn.functional as F
 from torch.cuda.amp import custom_bwd, custom_fwd
-from .utils import default, identity, normalize_to_neg_one_to_one, unnormalize_to_zero_to_one, construct_class_by_name
+from .utils import default, identity, normalize_to_neg_one_to_one, unnormalize_to_zero_to_one, construct_class_by_name, safe_torch_load
 from tqdm.auto import tqdm
 from einops import rearrange, reduce
 from functools import partial
@@ -115,7 +115,7 @@ class DDPM(nn.Module):
             self.init_from_ckpt(ckpt_path, ignore_keys, only_model)
 
     def init_from_ckpt(self, path, ignore_keys=list(), only_model=False, use_ema=False):
-        sd = torch.load(path, map_location="cpu")
+        sd = safe_torch_load(path, map_location="cpu")
         if 'ema' in list(sd.keys()) and use_ema:
             sd = sd['ema']
             new_sd = {}
@@ -436,7 +436,7 @@ class LatentDiffusion(DDPM):
 
     '''
     def init_from_ckpt(self, path, ignore_keys=list(), only_model=False):
-        sd = torch.load(path, map_location="cpu")
+        sd = safe_torch_load(path, map_location="cpu")
         if "state_dict" in list(sd.keys()):
             sd = sd["state_dict"]
         keys = list(sd.keys())

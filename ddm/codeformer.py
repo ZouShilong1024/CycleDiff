@@ -8,6 +8,7 @@ from typing import Optional, List
 from basicsr.archs.vqgan_arch import *
 from basicsr.utils import get_root_logger
 from basicsr.utils.registry import ARCH_REGISTRY
+from .utils import safe_torch_load
 
 def calc_mean_std(feat, eps=1e-5):
     """Calculate mean and std for adaptive_instance_normalization.
@@ -167,7 +168,7 @@ class CodeFormer(VQAutoEncoder):
 
         if vqgan_path is not None:
             self.load_state_dict(
-                torch.load(vqgan_path, map_location='cpu')['params_ema'])
+                safe_torch_load(vqgan_path, map_location='cpu')['params_ema'])
 
         if fix_modules is not None:
             for module in fix_modules:

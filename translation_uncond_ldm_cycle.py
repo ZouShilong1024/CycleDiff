@@ -166,7 +166,7 @@ class Sampler(object):
             self.results_folder.mkdir(exist_ok=True, parents=True)
 
         self.model1, self.model2, self.net_G_A, self.net_G_B = self.accelerator.prepare(self.model1, self.model2, self.net_G_A, self.net_G_B)
-        data = torch.load(cfg.sampler.ckpt_path,
+        data = safe_torch_load(cfg.sampler.ckpt_path,
                           map_location=lambda storage, loc: storage)
 
         self.model1 = self.accelerator.unwrap_model(self.model1)
