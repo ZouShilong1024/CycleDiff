@@ -14,7 +14,7 @@
     - [0. prepare dataset and the pretrained weight](#0-prepare-dataset-and-the-pretrained-weight)
     - [1. train VAE](#1-train-vae)
     - [2. train ldm](#2-train-ldm)
-    - [3. train cycle translator](#3-train-cycle-translator)
+    - [3. train cycle translator (supports Multi-GPU training)](#3-train-cycle-translator-supports-multi-gpu-training)
   - [🔍 Test CycleDiff](#-test-cyclediff)
   - [🙏 Acknowledgement](#-acknowledgement)
   - [📬 Contact](#-contact)
@@ -65,12 +65,17 @@ accelerate launch train_vae.py --cfg ./configs/{datasetA2B}/{class_B}_ae_kl_256x
 ```
 ### 2. train ldm
 ```bash
-accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_A}_ddm_const4_ldm_unet6_114.yaml
-accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_B}_ddm_const4_ldm_unet6_114.yaml
+accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_A}_ddm_const4_ldm_unet6_114_ode_2.yaml
+accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_B}_ddm_const4_ldm_unet6_114_ode_2.yaml
 ```
-### 3. train cycle translator
+### 3. train cycle translator (supports Multi-GPU training)
 ```bash
-accelerate launch train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
+# Single GPU
+python train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
+or
+accelerate train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
+# Multi GPU
+accelerate launch train_uncond_ldm_cycle_multi_gpu.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
 ```
 
 ## 🔍 Test CycleDiff
