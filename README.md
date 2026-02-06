@@ -72,7 +72,7 @@ accelerate launch train_uncond_ldm.py --cfg ./configs/{datasetA2B}/{class_B}_ddm
 ```bash
 # Single GPU
 python train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
-or
+# or
 accelerate train_uncond_ldm_cycle.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
 # Multi GPU
 accelerate launch train_uncond_ldm_cycle_multi_gpu.py --cfg ./configs/{datasetA2B}/translation_C_disc_timestep_ode_2.yaml
