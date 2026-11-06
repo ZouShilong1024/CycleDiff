@@ -790,7 +790,7 @@ class Unet(nn.Module):
                 p.requires_grad = False
 
     def init_from_ckpt(self, path, ignore_keys=list()):
-        sd = torch.load(path, map_location="cpu")["model"]
+        sd = torch.load(path, map_location="cpu", weights_only=True)["model"]
         keys = list(sd.keys())
         for k in keys:
             for ik in ignore_keys:
